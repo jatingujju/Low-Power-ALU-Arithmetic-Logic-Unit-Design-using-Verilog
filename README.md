@@ -209,6 +209,15 @@ GTKWave was used to verify:
 * Low-power mode operation
 
 ---
+## Project Screenshots
+
+### Simulation Results
+
+![Simulation Results](images/simulation_pass_results.png)
+
+### Waveform Verification
+
+![Waveform Verification](images/alu_waveform_verification.png)
 
 ## Industry Applications
 
