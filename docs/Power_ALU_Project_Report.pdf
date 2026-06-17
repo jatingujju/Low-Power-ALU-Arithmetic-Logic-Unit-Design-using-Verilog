@@ -1,0 +1,201 @@
+# Low-Power ALU (Arithmetic Logic Unit) Design using Verilog
+
+## Abstract
+
+This project presents the design and verification of a Low-Power Arithmetic Logic Unit (ALU) using Verilog HDL. The ALU performs arithmetic, logical, shift, and comparison operations while incorporating low-power design techniques such as operand isolation, RTL clock-enable, and low-power mode control. Functional verification was performed using Icarus Verilog and GTKWave.
+
+---
+
+# 1. Introduction
+
+An Arithmetic Logic Unit (ALU) is a fundamental component of a processor responsible for performing arithmetic and logical operations.
+
+Modern digital systems require low-power operation to reduce energy consumption, heat generation, and improve battery life. Therefore, low-power techniques were incorporated into the ALU design.
+
+---
+
+# 2. Objectives
+
+* Design a parameterized ALU using Verilog HDL.
+* Implement arithmetic and logical operations.
+* Generate status flags.
+* Apply low-power design concepts.
+* Verify functionality using simulation and waveform analysis.
+
+---
+
+# 3. ALU Operations
+
+| Opcode | Operation   |
+| ------ | ----------- |
+| 0000   | ADD         |
+| 0001   | SUB         |
+| 0010   | AND         |
+| 0011   | OR          |
+| 0100   | XOR         |
+| 0101   | NOT         |
+| 0110   | Shift Left  |
+| 0111   | Shift Right |
+| 1000   | Increment   |
+| 1001   | Decrement   |
+| 1010   | Compare     |
+
+---
+
+# 4. Low-Power Techniques Used
+
+## 4.1 Operand Isolation
+
+Inactive datapath blocks receive zero-valued inputs, reducing unnecessary switching activity.
+
+## 4.2 RTL Clock Enable
+
+Registers update only when the enable signal is active.
+
+## 4.3 Low-Power Mode
+
+Shift activity is reduced and arithmetic operations can be optimized for lower switching.
+
+---
+
+# 5. Design Architecture
+
+Input Operands A and B
+
+↓
+
+Opcode Decoder
+
+↓
+
+ALU Functional Unit
+
+↓
+
+Low-Power Control Logic
+
+↓
+
+Result Generation
+
+↓
+
+Flag Generation
+
+↓
+
+Output Register
+
+---
+
+# 6. Flags Generated
+
+## Zero Flag
+
+Indicates result equals zero.
+
+## Carry Flag
+
+Indicates carry generated during arithmetic operation.
+
+## Overflow Flag
+
+Indicates signed arithmetic overflow.
+
+## Negative Flag
+
+Indicates negative result.
+
+---
+
+# 7. Verification Methodology
+
+A self-checking testbench was developed to verify all ALU operations.
+
+Verification included:
+
+* Arithmetic operations
+* Logical operations
+* Shift operations
+* Compare operation
+* Zero flag verification
+* Negative flag verification
+* Operand isolation testing
+* Low-power mode testing
+
+---
+
+# 8. Simulation Environment
+
+Tools Used:
+
+* Verilog HDL
+* Icarus Verilog
+* GTKWave
+
+Simulation Commands:
+
+iverilog -g2012 -Wall -o alu_sim rtl/low_power_alu.v rtl/lp_adder.v tb/alu_tb.v
+
+vvp alu_sim
+
+gtkwave alu_power.vcd
+
+---
+
+# 9. Results
+
+Simulation Results:
+
+PASS COUNT = 11
+
+FAIL COUNT = 0
+
+All implemented ALU functions operated correctly.
+
+Waveform analysis confirmed:
+
+* Correct opcode execution
+* Proper flag generation
+* Correct result generation
+* Successful low-power mode operation
+
+---
+
+# 10. Applications
+
+* CPUs
+* Microcontrollers
+* Embedded Systems
+* IoT Devices
+* DSP Processors
+* Mobile Computing Systems
+* AI Accelerators
+
+---
+
+# 11. Future Scope
+
+* Dynamic Frequency Scaling (DFS)
+* Per-Unit Functional Enables
+* Multi-Cycle Shift Engine
+* CLA Tiling
+* UPF-Based Power Intent
+* FPGA Implementation
+* Power Analysis using Yosys/OpenSTA
+
+---
+
+# 12. Conclusion
+
+A parameterized Low-Power ALU was successfully designed and verified using Verilog HDL. The project demonstrates important digital design concepts including arithmetic logic implementation, flag generation, operand isolation, clock-enable design, low-power techniques, and functional verification. All test cases passed successfully, validating the correctness of the design.
+
+---
+
+# Author
+
+Jatin Gujarathi
+
+B.Tech Mechanical Engineering
+
+GitHub: https://github.com/jatingujju

@@ -1,0 +1,374 @@
+# Yosys Synthesis Flow for Low-Power ALU
+
+## File: synth.ys
+
+```tcl
+# ----------------------------------
+# Read RTL
+# ----------------------------------
+
+read_verilog rtl/lp_adder.v
+read_verilog rtl/low_power_alu.v
+
+# ----------------------------------
+# Set Top Module
+# ----------------------------------
+
+hierarchy -check -top low_power_alu
+
+# ----------------------------------
+# Generic RTL Optimizations
+# ----------------------------------
+
+proc
+opt
+fsm
+opt
+
+# ----------------------------------
+# Technology Independent Mapping
+# ----------------------------------
+
+techmap
+opt
+
+# ----------------------------------
+# Resource Sharing
+# ----------------------------------
+
+share
+
+# ----------------------------------
+# Arithmetic Optimizations
+# ----------------------------------
+
+alumacc
+
+# ----------------------------------
+# Logic Optimization
+# ----------------------------------
+
+opt_clean
+opt
+
+# ----------------------------------
+# Statistics
+# ----------------------------------
+
+stat
+
+# ----------------------------------
+# Generate Netlist
+# ----------------------------------
+
+write_json reports/alu.json
+
+write_verilog \
+reports/alu_synth.v
+
+# ----------------------------------
+# Resource Report
+# ----------------------------------
+
+tee -o reports/yosys_stat.txt stat
+```
+
+---
+
+# Run Yosys
+
+Linux:
+
+```bash
+yosys synth.ys
+```
+
+Windows:
+
+```cmd
+yosys synth.ys
+```
+
+Expected Output:
+
+```text
+=== low_power_alu ===
+
+Number of wires:
+Number of cells:
+Number of public wires:
+...
+```
+
+---
+
+# Output Files
+
+```text
+reports/
+
+├── alu.json
+├── alu_synth.v
+└── yosys_stat.txt
+```
+
+---
+
+# Screenshot to Capture
+
+Take a screenshot of:
+
+```text
+yosys synth.ys
+```
+
+terminal output.
+
+Save as:
+
+```text
+images/yosys_synthesis.png
+```
+
+---
+
+# Resource Utilization Analysis
+
+Open:
+
+```text
+reports/yosys_stat.txt
+```
+
+Typical report:
+
+```text
+Number of cells
+
+AND
+OR
+XOR
+MUX
+DFF
+ADD
+SUB
+```
+
+Capture screenshot:
+
+```text
+images/resource_report.png
+```
+
+---
+
+# Baseline vs Low-Power Toggle Comparison
+
+The ALU project uses VCD activity as a power proxy.
+
+Since Yosys itself does not perform accurate power analysis, we compare switching activity.
+
+---
+
+## Experiment 1: Baseline Mode
+
+Configure:
+
+```verilog
+lp_mode = 0;
+en      = 1;
+```
+
+Run simulation:
+
+```bash
+vvp alu_sim
+```
+
+Generated:
+
+```text
+alu_power.vcd
+```
+
+Rename:
+
+```bash
+mv alu_power.vcd baseline.vcd
+```
+
+Windows:
+
+```cmd
+rename alu_power.vcd baseline.vcd
+```
+
+---
+
+## Experiment 2: Low-Power Mode
+
+Configure:
+
+```verilog
+lp_mode = 1;
+en      = 1;
+```
+
+Run again:
+
+```bash
+vvp alu_sim
+```
+
+Rename:
+
+```bash
+mv alu_power.vcd lowpower.vcd
+```
+
+---
+
+# What to Observe
+
+Open both VCDs:
+
+```bash
+gtkwave baseline.vcd
+```
+
+```bash
+gtkwave lowpower.vcd
+```
+
+Focus on:
+
+```text
+A_iso
+B_iso
+
+result
+
+carry
+
+overflow
+
+shift_amt
+```
+
+---
+
+# Expected Behavior
+
+## Baseline
+
+```text
+lp_mode = 0
+```
+
+Characteristics:
+
+* Full datapath active
+* More transitions
+* Larger waveform density
+* Higher toggle count
+
+---
+
+## Low-Power
+
+```text
+lp_mode = 1
+```
+
+Characteristics:
+
+* Reduced shifter activity
+* Operand isolation effect
+* Fewer transitions
+* Lower switching activity
+
+---
+
+# Simple Toggle Estimation
+
+Compare visually:
+
+### Baseline
+
+```text
+result
+```
+
+Example:
+
+```text
+_|-|_|--|-|_|-|--|-|_
+```
+
+Many transitions.
+
+### Low-Power
+
+```text
+result
+```
+
+Example:
+
+```text
+____|-|_____|-|_____
+```
+
+Fewer transitions.
+
+---
+
+# Optional SAIF Conversion
+
+For more professional reporting:
+
+```bash
+vcd2saif \
+-input baseline.vcd \
+-output baseline.saif
+```
+
+```bash
+vcd2saif \
+-input lowpower.vcd \
+-output lowpower.saif
+```
+
+Generated:
+
+```text
+baseline.saif
+lowpower.saif
+```
+
+These files contain switching statistics that can be compared directly.
+
+---
+
+# Report Discussion Example
+
+> Two simulations were performed to evaluate switching activity. In baseline mode (`lp_mode=0`), the ALU exhibited higher transition density across arithmetic and shift datapaths. When low-power mode (`lp_mode=1`) was enabled, operand isolation and reduced shift activity lowered internal signal transitions. Although exact silicon power was not measured, the reduction in VCD switching activity indicates a decrease in dynamic power consumption, demonstrating the effectiveness of the low-power RTL techniques implemented in the design.
+
+---
+
+# GitHub Evidence Checklist
+
+Capture screenshots of:
+
+1. RTL source code
+2. Testbench source code
+3. Successful Yosys synthesis
+4. Resource report
+5. Baseline waveform
+6. Low-power waveform
+7. Operand isolation behavior
+8. VCD generation
+9. SAIF generation (optional)
+10. GitHub repository page
+
+These artifacts provide strong proof of RTL design, verification, synthesis, and low-power analysis work for interviews and portfolio reviews.
