@@ -1,0 +1,31 @@
+# Simulation files
+
+*.vvp
+*.out
+alu_sim
+
+# Waveform viewer files
+
+*.gtkw
+
+# Logs
+
+*.log
+
+# Temporary files
+
+*.tmp
+*.bak
+
+# OS files
+
+Thumbs.db
+.DS_Store
+
+# Vivado generated files
+
+*.jou
+*.str
+.cache/
+.runs/
+.sim/
